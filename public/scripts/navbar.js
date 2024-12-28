@@ -2,7 +2,7 @@ import {fetchRoles} from "./api/auth.js";
 
 export async function renderNavbar() {
     const navbarContainer = document.getElementById('navbar');
-    const response = await fetch('/templates/navbar.html');
+    const response = await fetch('/components/navbar.html');
     const navbarHTML = await response.text();
     navbarContainer.innerHTML = navbarHTML;
 
