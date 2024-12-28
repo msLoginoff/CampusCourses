@@ -1,20 +1,18 @@
-<body>
-<div class="login-container">
-	<h1>Login</h1>
-	<form id="loginForm">
-		<div>
-			<label for="username">Username:</label>
-			<input type="text" id="username" name="username" required />
-		</div>
-		<div>
-			<label for="password">Password:</label>
-			<input type="password" id="password" name="password" required />
-		</div>
-		<button type="submit">Login</button>
-	</form>
+<div class="container d-flex justify-content-center align-items-start vh-100 pt-5" id="loginForm">
+	<div class="col-8">
+		<h2 class="mb-4">Авторизация</h2>
+		<form action="/login">
+			<div class="mb-3">
+				<label for="username" class="form-label">Email</label>
+				<input type="email" class="form-control" id="username" name="email" placeholder="Введите ваш email" required>
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label">Пароль</label>
+				<input type="password" class="form-control" id="password" name="password" placeholder="Введите ваш пароль" required>
+			</div>
+			<div class="d-flex">
+				<button type="submit" class="btn btn-primary btn-sm me-auto">Войти</button>
+			</div>
+		</form>
+	</div>
 </div>
-
-<!--
-<script src="../scripts/login.js" type="module" defer></script>
--->
-</body>
