@@ -7,6 +7,8 @@
     "start": "live-server public --port=3000 --entry-file=index.html"
   },
   "dependencies": {
+    "5": "^0.0.1",
+    "bootstrap": "^5.3.3",
     "lite-server": "^2.6.1",
     "live-server": "^1.2.2"
   }

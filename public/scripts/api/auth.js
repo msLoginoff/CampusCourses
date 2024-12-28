@@ -14,7 +14,6 @@ export const login = async (email, password) => {
         }
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
-        await renderNavbar();
         return data;
     } catch (error) {
         console.error('Ошибка при авторизации:', error);

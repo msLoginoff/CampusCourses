@@ -1,19 +1,31 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Campus Courses</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#">Кампусные курсы</a>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Группы курсов</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Мои курсы</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Преподаваемые курсы</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item">
-        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link active" aria-current="page" href="/registration">Регистрация</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/registration">Register</a>
+        <a class="nav-link active" aria-current="page" href="/login">Войти</a>
       </li>
     </ul>
-    <ul class="navbar-nav ml-auto student-links"></ul>
-    <ul class="navbar-nav ml-auto teacher-links"></ul>
-    <ul class="navbar-nav ml-auto admin-links"></ul>
   </div>
 </nav>

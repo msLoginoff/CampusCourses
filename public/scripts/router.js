@@ -1,4 +1,5 @@
 import {setupLoginPage} from "./login.js";
+import {fetchRoles} from "./api/auth.js";
 
 const routes = {
     "/": { template: "/pages/home.html", setup: null },
@@ -46,12 +47,50 @@ function setupRouter() {
     handleRoute(window.location.pathname);
 }
 
-async function loadNavbar() {
+export async function loadNavbar() {
     try {
         const response = await fetch('/components/navbar.html');
         if (!response.ok) throw new Error(`Failed to load navbar`);
         const navbar = await response.text();
         document.getElementById('navbar').innerHTML = navbar;
+
+        const token = localStorage.getItem('authToken');
+
+        const roles = await fetchRoles();
+        console.log(roles);
+
+        if (token) {
+
+        }
+
+        if (!roles) {
+            // User not logged in
+            document.querySelector('.student-links').style.display = 'none';
+            document.querySelector('.teacher-links').style.display = 'none';
+            document.querySelector('.admin-links').style.display = 'none';
+            return;
+        }
+
+        if (roles.isStudent) {
+            document.querySelector('.student-links').innerHTML = `
+      <li class="nav-item">
+        <a class="nav-link" href="/courses/my">Мои курсы</a>
+      </li>`;
+        }
+        else {
+            document.querySelector('.student-links').style.display = 'none';
+        }
+
+        if (roles.isTeacher) {
+            document.querySelector('.teacher-links').innerHTML = `
+      <li class="nav-item">
+        <a class="nav-link" href="/courses/teaching">Преподаваемые курсы</a>
+      </li>`;
+        }
+        else {
+            document.querySelector('.teacher-links').style.display = 'none';
+        }
+
     } catch (error) {
         console.error('Error loading navbar:', error);
     }
