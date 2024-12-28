@@ -7,7 +7,6 @@ export async function renderNavbar() {
     navbarContainer.innerHTML = navbarHTML;
 
     const roles = await fetchRoles();
-
     console.log(roles);
 
     // if (!roles) {
