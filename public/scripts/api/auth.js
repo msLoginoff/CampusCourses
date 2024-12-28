@@ -1,3 +1,4 @@
+import {renderNavbar} from "../navbar.js";
 
 export const login = async (email, password) => {
     try {
@@ -13,7 +14,7 @@ export const login = async (email, password) => {
         }
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
-        renderNavbar(); // Ререндеринг хедера
+        await renderNavbar();
         return data;
     } catch (error) {
         console.error('Ошибка при авторизации:', error);
@@ -35,7 +36,7 @@ export const register = async (userData) => {
         }
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
-        renderNavbar(); // Ререндеринг хедера
+        await renderNavbar();
         return data;
     } catch (error) {
         console.error('Ошибка при регистрации:', error);
