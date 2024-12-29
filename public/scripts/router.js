@@ -1,9 +1,10 @@
 import {setupLoginPage} from "./login.js";
 import {fetchRoles} from "./api/auth.js";
+import {setupRegistrationPage} from "./registration.js";
 
 const routes = {
     "/": { template: "/pages/home.html", setup: null },
-    "/registration": { template: "/pages/registration.html", setup: null },
+    "/registration": { template: "/pages/registration.html", setup: setupRegistrationPage },
     "/login": { template: "/pages/login.html", setup: setupLoginPage },
     "/profile": { template: "/pages/profile.html", setup: null },
     "/groups": { template: "/pages/groups.html", setup: null },
