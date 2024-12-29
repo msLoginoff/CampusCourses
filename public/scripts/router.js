@@ -1,11 +1,14 @@
 import {setupLoginPage} from "./login.js";
 import {fetchRoles} from "./api/auth.js";
 import {setupRegistrationPage} from "./registration.js";
+import {getProfile} from "./api/profile.js";
+import {setupLogoutPage} from "./logout.js";
 
 const routes = {
     "/": { template: "/pages/home.html", setup: null },
     "/registration": { template: "/pages/registration.html", setup: setupRegistrationPage },
     "/login": { template: "/pages/login.html", setup: setupLoginPage },
+    "/logout": { template: "/pages/logout.html", setup: setupLogoutPage },
     "/profile": { template: "/pages/profile.html", setup: null },
     "/groups": { template: "/pages/groups.html", setup: null },
 };
@@ -53,27 +56,28 @@ function setupRouter() {
 }
 
 export async function loadNavbar() {
-    try {
-        const response = await fetch('/components/navbar.html');
-        if (!response.ok) throw new Error(`Failed to load navbar`);
-        const navbar = await response.text();
-        document.getElementById('navbar').innerHTML = navbar;
+    const response = await fetch('/components/navbar.html');
+    if (!response.ok) throw new Error(`Failed to load navbar`);
+    const navbar = await response.text();
+    document.getElementById('navbar').innerHTML = navbar;
 
-        const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
 
-        const roles = await fetchRoles();
-        console.log(roles);
-
-        if (token) {
-            document.getElementById('Groups').hidden = false;
-        }
-
-        document.getElementById('MyCourses').hidden = !roles.isStudent;
-        document.getElementById('TeacherCourses').hidden = !roles.isTeacher;
-
-    } catch (error) {
-        console.error('Error loading navbar:', error);
+    if (token) {
+        document.getElementById('Groups').hidden = false;
+        document.getElementById('logout').hidden = false;
+        document.getElementById('login').hidden = true;
+        document.getElementById('registration').hidden = true;
+        const profile = await getProfile();
+        const emailFromServer = profile.email;
+        const userEmail = document.getElementById('user');
+        userEmail.hidden = false;
+        userEmail.getElementsByClassName('nav-link').item(0).innerHTML = emailFromServer;
     }
+
+    const roles = await fetchRoles();
+    document.getElementById('MyCourses').hidden = !roles.isStudent;
+    document.getElementById('TeacherCourses').hidden = !roles.isTeacher;
 }
 
 async function init() {

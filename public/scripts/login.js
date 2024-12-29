@@ -13,10 +13,6 @@ export async function setupLoginPage() {
             loadNavbar()
             console.log(value.token);
             window.location.href="/";
-            //window.location.href="/";
         }).catch((error) => {console.log(error)});
-        //console.log('Login data:', { username, password });
-
-        //alert('Login successful!');
     });
 }
