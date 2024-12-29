@@ -25,6 +25,7 @@ export async function setupRegistrationPage() {
 
         register(userData).then((value) => {
             console.log(value.token);
+            window.location.href="/";
         }).catch((error) => {console.log(error)});
         loadNavbar()
     });
