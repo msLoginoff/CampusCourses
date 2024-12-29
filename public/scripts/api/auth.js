@@ -35,7 +35,6 @@ export const register = async (userData) => {
         }
         const data = await response.json();
         localStorage.setItem('authToken', data.token);
-        await renderNavbar();
         return data;
     } catch (error) {
         console.error('Ошибка при регистрации:', error);
@@ -64,7 +63,7 @@ export const fetchRoles = async () => {
     }
 };
 
-const logout = () => {
+export const logout = () => {
     localStorage.removeItem('authToken');
     window.location.href = '/login';
 };

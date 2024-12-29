@@ -1,28 +1,30 @@
-<body>
-<div class="registration-container">
-	<h1>Registration</h1>
-	<form id="registrationForm">
-		<div>
-			<label for="fullName">Full name</label>
-			<input type="text" id="fullName" name="fullName" required/>
-		</div>
-		<div>
-			<label for="email">Email</label>
-			<input type="email" id="email" name="email" required/>
-		</div>
-		<div>
-			<label for="birthDate">Birth date</label>
-			<input type="date" id="birthDate" name="birthDate" required/>
-		</div>
-		<div>
-			<label for="password">Password</label>
-			<input type="password" id="password" name="password" required/>
-		</div>
-		<div>
-			<label for="ConfirmPassword">Confirm password</label>
-			<input type="password" id="ConfirmPassword" name="ConfirmPassword" required/>
-		</div>
-		<button type="submit">Sign up</button>
-	</form>
+<div class="container d-flex justify-content-center align-items-start vh-100 pt-5" id="registrationPage">
+	<div class="col-8">
+		<h2 class="mb-4">Регистрация</h2>
+		<form id="registrationForm" action="/registration">
+			<div class="mb-3">
+				<label for="fullName" class="form-label">Full name</label>
+				<input type="text" class="form-control" id="fullName" name="fullName" required/>
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Email</label>
+				<input type="email" class="form-control" id="email" name="email" required/>
+			</div>
+			<div class="mb-3" >
+				<label for="birthDate" class="form-label">Birth date</label>
+				<input type="date" class="form-control" id="birthDate" name="birthDate" required/>
+			</div>
+			<div class="mb-3">
+				<label for="password" class="form-label">Password</label>
+				<input type="password" class="form-control" id="password" name="password" required/>
+			</div>
+			<div class="mb-3">
+				<label for="ConfirmPassword" class="form-label">Confirm password</label>
+				<input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required/>
+			</div>
+			<div class="d-flex">
+				<button type="submit" class="btn btn-primary btn-sm me-auto">Регистрация</button>
+			</div>
+		</form>
+	</div>
 </div>
-</body>
