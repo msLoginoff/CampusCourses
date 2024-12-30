@@ -4,6 +4,7 @@ import {setupRegistrationPage} from "./registration.js";
 import {getProfile} from "./api/profileApi.js";
 import {setupLogoutPage} from "./logout.js";
 import {setupProfilePage} from "./profile.js";
+import {setupGroupsPage} from "./groups.js";
 
 const routes = {
     "/": { template: "/pages/home.html", setup: null, based: true },
@@ -11,28 +12,62 @@ const routes = {
     "/login": { template: "/pages/login.html", setup: setupLoginPage, based: true },
     "/logout": { template: "/pages/logout.html", setup: setupLogoutPage },
     "/profile": { template: "/pages/profile.html", setup: setupProfilePage },
-    "/groups": { template: "/pages/groups.html", setup: null },
+    "/groups": { template: "/pages/groups.html", setup: setupGroupsPage },
+    "/groups/:id": { template: "/pages/group-details.html", setup: null, dynamic: true },
 };
 
-export let cachedProfile = {
-    fullName: null,
-    email: null,
-    birthDate: null,
-};
+export let cachedProfile = null;
+export let isAuthorized = false;
 
-async function loadPage(route) {
+function matchRoute(path) {
+    if (routes[path] && !routes[path].dynamic) {
+        return { route: routes[path], params: {} };
+    }
+
+    for (const [routePath, route] of Object.entries(routes)) {
+        if (!route.dynamic) continue;
+
+        const routeParts = routePath.split("/");
+        const pathParts = path.split("/");
+
+        if (routeParts.length !== pathParts.length) continue;
+
+        const params = {};
+        let isMatch = true;
+
+        for (let i = 0; i < routeParts.length; i++) {
+            if (routeParts[i].startsWith(":")) {
+                const paramName = routeParts[i].slice(1);
+                params[paramName] = pathParts[i];
+            } else if (routeParts[i] !== pathParts[i]) {
+                isMatch = false;
+                break;
+            }
+        }
+
+        if (isMatch) {
+            return { route, params };
+        }
+    }
+
+    return null;
+}
+
+
+
+async function loadPage(route, params = {}) {
     try {
         const response = await fetch(route.template);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
         document.getElementById('content').innerHTML = html;
 
-        if (!localStorage.getItem('authToken')) {
-            await loadNavbar()
+        if (!isAuthorized) {
+            await loadNavbar();
         }
 
         if (typeof route.setup === "function") {
-            await route.setup();
+            await route.setup(params);
         }
     } catch (error) {
         console.error('Error loading page:', error);
@@ -41,29 +76,43 @@ async function loadPage(route) {
 }
 
 export async function handleRoute(path) {
-
-    if (path === '/profile') {
-        try {
-            cachedProfile = await getProfile();
-        } catch (error) {
-            console.error('Error preloading profile:', error);
-        }
+    if (path !== "/") {
+        path = path.replace(/\/+$/, "");
     }
 
-    const route = routes[path] || routes["/"];
-    if (route.based !== true) {
-        const isAuthorize = await checkAuthorization();
+    const authResponse = await checkAuthorization();
+    const token = localStorage.getItem("authToken");
 
-        console.log(isAuthorize)
-        if (!isAuthorize.ok) {
-            const route1 = routes["/login"] || routes["/"];
-            window.location.href = "/login";
-            await loadPage(route1);
+    if (!authResponse.ok || !token) {
+        isAuthorized = false;
+        cachedProfile = null;
+        await loadNavbar();
+
+        const route = matchRoute(path)?.route || routes["/"];
+        if (route.based !== true) {
+            window.history.pushState({}, "", "/login");
+            await loadPage(routes["/login"]);
             return;
         }
+    } else {
+        isAuthorized = true;
+
+        if (!cachedProfile) {
+            cachedProfile = await getProfile();
+        }
     }
-    await loadPage(route);
+
+    const matched = matchRoute(path);
+    if (!matched) {
+        document.getElementById("content").innerHTML = "<h1>Page not found</h1>";
+        return;
+    }
+
+    const { route, params } = matched;
+
+    await loadPage(route, params);
 }
+
 
 function setupRouter() {
     document.body.addEventListener('click', (event) => {
@@ -83,31 +132,42 @@ function setupRouter() {
 }
 
 export async function loadNavbar() {
-    const response = await fetch('/components/navbar.html');
+    const response = await fetch("/components/navbar.html");
     if (!response.ok) throw new Error(`Failed to load navbar`);
     const navbar = await response.text();
-    document.getElementById('navbar').innerHTML = navbar;
+    document.getElementById("navbar").innerHTML = navbar;
 
-    const token = localStorage.getItem('authToken');
+    if (isAuthorized) {
+        document.getElementById("Groups").hidden = false;
+        document.getElementById("logout").hidden = false;
+        document.getElementById("login").hidden = true;
+        document.getElementById("registration").hidden = true;
 
-    if (token) {
-        document.getElementById('Groups').hidden = false;
-        document.getElementById('logout').hidden = false;
-        document.getElementById('login').hidden = true;
-        document.getElementById('registration').hidden = true;
-        const profile = await getProfile();
-        const emailFromServer = profile.email;
-        const userEmail = document.getElementById('user');
-        userEmail.hidden = false;
-        userEmail.getElementsByClassName('nav-link').item(0).innerHTML = emailFromServer;
+        if (cachedProfile) {
+            const userEmail = document.getElementById("user");
+            userEmail.hidden = false;
+            userEmail.getElementsByClassName("nav-link").item(0).innerHTML = cachedProfile.email;
+        }
+    } else {
+        document.getElementById("Groups").hidden = true;
+        document.getElementById("logout").hidden = true;
+        document.getElementById("login").hidden = false;
+        document.getElementById("registration").hidden = false;
     }
 
-    const roles = await fetchRoles();
-    document.getElementById('MyCourses').hidden = !roles.isStudent;
-    document.getElementById('TeacherCourses').hidden = !roles.isTeacher;
+    const roles = isAuthorized ? await fetchRoles() : { isStudent: false, isTeacher: false };
+    document.getElementById("MyCourses").hidden = !roles.isStudent;
+    document.getElementById("TeacherCourses").hidden = !roles.isTeacher;
 }
 
+
 async function init() {
+    const authResponse = await checkAuthorization();
+    isAuthorized = authResponse.ok;
+    if (isAuthorized) {
+        cachedProfile = await getProfile();
+    }
+
     setupRouter();
     await loadNavbar();
 }
