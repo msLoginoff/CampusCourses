@@ -1,1 +1,22 @@
-<h1>Profile</h1>
+<div class="container d-flex justify-content-center align-items-start vh-100 pt-5" id="profilePage">
+	<div class="col-8">
+		<h2 class="mb-4">Профиль</h2>
+		<form id="profileForm" action="/profile">
+			<div class="mb-3">
+				<label for="fullName" class="form-label">ФИО</label>
+				<input type="text" class="form-control" id="fullName" name="fullName" placeholder="Введите ваше имя" required/>
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Email</label>
+				<input type="email" class="form-control custom-disabled" id="email" name="email" placeholder="Введите вашу почту" required disabled/>
+			</div>
+			<div class="mb-3" >
+				<label for="birthDate" class="form-label">Дата рождения</label>
+				<input type="date" class="form-control" id="birthDate" name="Дата рождения" placeholder="Введите вашу дату рождения" required/>
+			</div>
+			<div class="d-flex">
+				<button id="saveButton" type="submit" class="btn btn-primary btn-sm me-auto" disabled>Изменить</button>
+			</div>
+		</form>
+	</div>
+</div>

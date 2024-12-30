@@ -1,5 +1,5 @@
 import {login} from "./api/auth.js";
-import {handleRoute, loadNavbar} from "./router.js";
+import {loadNavbar} from "./router.js";
 
 export async function setupLoginPage() {
     const form = document.getElementById('loginForm');

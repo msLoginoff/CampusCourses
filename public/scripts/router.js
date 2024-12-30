@@ -1,16 +1,23 @@
 import {setupLoginPage} from "./login.js";
-import {fetchRoles} from "./api/auth.js";
+import {checkAuthorization, fetchRoles} from "./api/auth.js";
 import {setupRegistrationPage} from "./registration.js";
-import {getProfile} from "./api/profile.js";
+import {getProfile} from "./api/profileApi.js";
 import {setupLogoutPage} from "./logout.js";
+import {setupProfilePage} from "./profile.js";
 
 const routes = {
-    "/": { template: "/pages/home.html", setup: null },
-    "/registration": { template: "/pages/registration.html", setup: setupRegistrationPage },
-    "/login": { template: "/pages/login.html", setup: setupLoginPage },
+    "/": { template: "/pages/home.html", setup: null, based: true },
+    "/registration": { template: "/pages/registration.html", setup: setupRegistrationPage, based: true },
+    "/login": { template: "/pages/login.html", setup: setupLoginPage, based: true },
     "/logout": { template: "/pages/logout.html", setup: setupLogoutPage },
-    "/profile": { template: "/pages/profile.html", setup: null },
+    "/profile": { template: "/pages/profile.html", setup: setupProfilePage },
     "/groups": { template: "/pages/groups.html", setup: null },
+};
+
+export let cachedProfile = {
+    fullName: null,
+    email: null,
+    birthDate: null,
 };
 
 async function loadPage(route) {
@@ -34,7 +41,27 @@ async function loadPage(route) {
 }
 
 export async function handleRoute(path) {
+
+    if (path === '/profile') {
+        try {
+            cachedProfile = await getProfile();
+        } catch (error) {
+            console.error('Error preloading profile:', error);
+        }
+    }
+
     const route = routes[path] || routes["/"];
+    if (route.based !== true) {
+        const isAuthorize = await checkAuthorization();
+
+        console.log(isAuthorize)
+        if (!isAuthorize.ok) {
+            const route1 = routes["/login"] || routes["/"];
+            window.location.href = "/login";
+            await loadPage(route1);
+            return;
+        }
+    }
     await loadPage(route);
 }
 
@@ -81,8 +108,8 @@ export async function loadNavbar() {
 }
 
 async function init() {
-    await loadNavbar();
     setupRouter();
+    await loadNavbar();
 }
 
 init();

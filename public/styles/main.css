@@ -27,3 +27,9 @@ nav ul li a:hover {
 .container {
     padding: 20px;
 }
+
+input[disabled].custom-disabled {
+    background-color: #f4f4f4 !important;
+    color: #acacac !important;
+    opacity: 1 !important;
+}
