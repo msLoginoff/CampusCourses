@@ -4,14 +4,16 @@ import {setupRegistrationPage} from "./registration.js";
 import {getProfile} from "./api/profileApi.js";
 import {setupLogoutPage} from "./logout.js";
 import {setupProfilePage} from "./profile.js";
+import {setupCourseCardPage} from "./course-card.js";
 
 const routes = {
-    "/": { template: "/pages/home.html", setup: null, based: true },
-    "/registration": { template: "/pages/registration.html", setup: setupRegistrationPage, based: true },
-    "/login": { template: "/pages/login.html", setup: setupLoginPage, based: true },
-    "/logout": { template: "/pages/logout.html", setup: setupLogoutPage },
-    "/profile": { template: "/pages/profile.html", setup: setupProfilePage },
-    "/groups": { template: "/pages/groups.html", setup: null },
+    "/": {template: "/pages/home.html", setup: null, based: true},
+    "/registration": {template: "/pages/registration.html", setup: setupRegistrationPage, based: true},
+    "/login": {template: "/pages/login.html", setup: setupLoginPage, based: true},
+    "/logout": {template: "/pages/logout.html", setup: setupLogoutPage},
+    "/profile": {template: "/pages/profile.html", setup: setupProfilePage},
+    "/groups": {template: "/pages/groups.html", setup: null},
+    "/courses": {template: "/pages/course-card/course-card.html", setup: setupCourseCardPage, based: true},
 };
 
 export let cachedProfile = {
@@ -31,8 +33,29 @@ async function loadPage(route) {
             await loadNavbar()
         }
 
-        if (typeof route.setup === "function") {
-            await route.setup();
+        if (route.setup === null) {
+            return
+        }
+
+        if (typeof route.setup !== "function") {
+            console.error(`Route setup ${route.setup.name} is not a function. Check out route configurations for current path`);
+            document.getElementById('content').innerHTML = '<h1>Something went wrong</h1>';
+            return
+        }
+
+        switch (route.variables?.length) {
+            case undefined:
+                await route.setup();
+                break
+            case 1:
+                await route.setup(route.variables[0]);
+                break
+            case 2:
+                await route.setup(route.variables[0], route.variables[1]);
+                break
+            case 3:
+                await route.setup(route.variables[0], route.variables[1], route.variables[2]);
+                break
         }
     } catch (error) {
         console.error('Error loading page:', error);
@@ -48,6 +71,15 @@ export async function handleRoute(path) {
         } catch (error) {
             console.error('Error preloading profile:', error);
         }
+    }
+
+    if (path.includes("/courses/")) {
+        const start = path.indexOf("/courses/") + "/courses/".length;
+        const end = start + 36;
+
+        const courseId = path.substring(start, end);
+        path = path.replace(`/${courseId}`, '')
+        routes['/courses'].variables = [courseId]
     }
 
     const route = routes[path] || routes["/"];
