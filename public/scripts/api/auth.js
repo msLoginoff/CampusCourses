@@ -99,6 +99,7 @@ export const checkAuthorization = async () => {
         roles = await fetchRoles();
     }
     catch (error) {
+        console.log(error.status);
         if (error.status === 401) {
             localStorage.removeItem('authToken');
             return {
