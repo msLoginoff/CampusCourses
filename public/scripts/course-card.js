@@ -3,7 +3,7 @@ import {
     changeCourseStatus,
     createNotification,
     editStatusStudent,
-    fetchCourseDetails, setStudentMark
+    fetchCourseDetails, setStudentMark, signUpToCourse
 } from "./api/course.js";
 import {fetchRoles} from "./api/auth.js";
 import {fetchUsers} from "./api/user.js";
@@ -21,6 +21,8 @@ export async function setupCourseCardPage(params) {
     setupNotifications(courseDetails)
     setupTeachers(courseDetails)
     setupStudents(courseDetails, roles)
+
+    setupSignUpToCourseButton(courseDetails, roles, myEmail)
 
     setupChangeCourseDetailsModal(courseId, roles)
     setupChangeCourseStatusModal(courseDetails, roles, myEmail)
@@ -185,6 +187,26 @@ function addTeacherNode(teacherName, teacherEmail, isMain) {
 
     teacherNode.style.display = null
     teacherListNode.appendChild(teacherNode)
+}
+
+function setupSignUpToCourseButton(courseDetails, roles, myEmail) {
+    const courseId = courseDetails['id']
+    const signUpToCourseButton = document.getElementById("sign-up-to-course-button")
+    const isCourseTeacher = courseDetails['teachers'].some((teacher) => teacher['email'] === myEmail)
+    const isCourseStudent = courseDetails['students'].some((students) => students['email'] === myEmail)
+
+    if (isCourseTeacher || isCourseStudent || courseDetails['status'] !== 'OpenForAssigning') {
+        return
+    }
+
+    signUpToCourseButton.style.display = null
+    signUpToCourseButton.addEventListener("click", () => {
+        signUpToCourse(courseId).then(() => {
+            alert("Заявка отправлена")
+        }).catch(() => {
+            alert("Не удалось отправить заявку. Возможно, вы уже отправили заявку ранее. Свяжитесь с преподавателем курса")
+        })
+    })
 }
 
 function setupCreateNotificationModal(courseId) {
@@ -370,7 +392,7 @@ function setupMidtermResultChangeModal(courseId, studentId, studentNode) {
             const passed = document.getElementById("passed-midterm-result").checked
             const failed = document.getElementById("failed-midterm-result").checked
 
-            if (!passed && !failed){
+            if (!passed && !failed) {
                 return
             }
 
@@ -407,7 +429,7 @@ function setupFinalResultChangeModal(courseId, studentId, studentNode) {
             const passed = document.getElementById("passed-final-result").checked
             const failed = document.getElementById("failed-final-result").checked
 
-            if (!passed && !failed){
+            if (!passed && !failed) {
                 return
             }
 
