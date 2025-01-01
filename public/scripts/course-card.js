@@ -24,9 +24,9 @@ export async function setupCourseCardPage(params) {
 
     setupSignUpToCourseButton(courseDetails, roles, myEmail)
 
-    setupChangeCourseDetailsModal(courseId, roles)
+    setupChangeCourseDetailsModal(courseDetails, roles, myEmail)
     setupChangeCourseStatusModal(courseDetails, roles, myEmail)
-    setupCreateNotificationModal(courseId)
+    setupCreateNotificationModal(courseDetails, roles, myEmail)
     setupAddTeacherModal(courseDetails, roles, myEmail)
 }
 
@@ -73,9 +73,7 @@ function setupCourseStatus(status) {
 }
 
 function setupNotifications(courseDetails) {
-    if (courseDetails['notifications']?.length > 0) {
-        document.getElementById(`notification-count`).innerHTML = `${courseDetails['notifications'].length}`
-    }
+    document.getElementById(`notification-count`).innerHTML = `${courseDetails['notifications']?.length ?? 0}`
 
     courseDetails['notifications'].forEach((notification) => {
         addNotificationNode(notification['text'], notification['isImportant'])
@@ -121,7 +119,7 @@ function setupStudents(courseDetails, roles) {
         studentNode.getElementsByClassName("student-email")[0].innerHTML = student['email']
         studentNode.getElementsByClassName("student-status")[0].innerHTML = translate(student['status'])
 
-        if (student['midtermResult'] && student['finalResult']) {
+        if (student ['status'] === 'Accepted' && student['midtermResult'] && student['finalResult']) {
             middleTermResultContainerNode.style.display = null
             finalResultLabelContainerNode.style.display = null
             middleTermResultNode.innerHTML = translate(student['midtermResult'])
@@ -132,6 +130,7 @@ function setupStudents(courseDetails, roles) {
         setupFinalResultChangeModal(courseId, student['id'], studentNode)
 
         if (student['status'] === 'InQueue') {
+            const studentStatusChangeNode = studentStatusChangeTemplateNode.cloneNode(true)
             studentStatusChangeNode.getElementsByClassName('accept-button')[0].onclick = function () {
                 acceptStudent(courseId, student['id']).then(() => {
                     studentNode.removeChild(studentStatusChangeNode)
@@ -201,6 +200,7 @@ function setupSignUpToCourseButton(courseDetails, roles, myEmail) {
     signUpToCourseButton.style.display = null
     signUpToCourseButton.addEventListener("click", () => {
         signUpToCourse(courseId).then(() => {
+            signUpToCourseButton.style.display = 'none'
             alert("Заявка отправлена")
         }).catch(() => {
             alert("Не удалось отправить заявку. Возможно, вы уже отправили заявку ранее. Свяжитесь с преподавателем курса")
@@ -208,7 +208,14 @@ function setupSignUpToCourseButton(courseDetails, roles, myEmail) {
     })
 }
 
-function setupCreateNotificationModal(courseId) {
+function setupCreateNotificationModal(courseDetails, roles, myEmail) {
+    const courseId = courseDetails['id']
+    const isCourseTeacher = courseDetails['teachers'].some((teacher) => teacher['email'] === myEmail)
+
+    if (!roles.isAdmin && !isCourseTeacher) {
+        return;
+    }
+
     const createNotificationModalNode = document.getElementById("create-notification-modal")
     // noinspection JSUnresolvedReference
     const createNotificationModal = new bootstrap.Modal(createNotificationModalNode);
@@ -217,6 +224,7 @@ function setupCreateNotificationModal(courseId) {
     const closeModalButton = createNotificationModalNode.getElementsByClassName("close-modal")[0];
     const saveModalButton = createNotificationModalNode.getElementsByClassName("save-modal")[0];
 
+    openModalButton.style.display = null
     openModalButton.addEventListener("click", () => createNotificationModal.show())
     // noinspection JSUnresolvedReference
     closeModalButton.addEventListener("click", () => createNotificationModal.hide())
@@ -234,10 +242,13 @@ function setupCreateNotificationModal(courseId) {
     })
 }
 
-function setupChangeCourseDetailsModal(courseId, roles) {
+function setupChangeCourseDetailsModal(courseDetails, roles, myEmail) {
+    const courseId = courseDetails['id']
+    const isCourseTeacher = courseDetails['teachers'].some((teacher) => teacher['email'] === myEmail)
+
     if (roles.isAdmin) {
         document.getElementById("long-form").style.display = null
-    } else if (roles.isTeacher) {
+    } else if (roles.isTeacher && isCourseTeacher) {
         document.getElementById("short-form").style.display = null
     } else {
         return

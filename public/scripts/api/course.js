@@ -255,6 +255,4 @@ export const signUpToCourse = async (courseId) => {
         console.error(`Ошибка при попытке записаться на курс ${courseId}: ` + JSON.stringify(await response.json()));
         throw new Error(response.status.toString());
     }
-
-    return await response.json();
 };

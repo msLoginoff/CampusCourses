@@ -33,7 +33,7 @@ export async function setupGroupDetailsPage(params) {
         if (card) {
             const courseId = card.dataset.id; // Получаем id из data-атрибута
             console.log(`Клик по курсу с id: ${courseId}`);
-            //window.location.href = `/course/${courseId}`;
+            window.location.href = `/courses/${courseId}`;
         }
     });
 }
