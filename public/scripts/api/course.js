@@ -243,16 +243,28 @@ export const signUpToCourse = async (courseId) => {
         window.location.href = "/login"
     }
 
-    const response = await fetch(`https://camp-courses.api.kreosoft.space/courses/${courseId}/sign-up`, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        }
-    });
+    await tryRequest(async () => {
+        const response = await fetch(`https://camp-courses.api.kreosoft.space/courses/${courseId}/sign-up`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
 
-    if (!response.ok) {
-        console.error(`Ошибка при попытке записаться на курс ${courseId}: ` + JSON.stringify(await response.json()));
-        throw new Error(response.status.toString());
-    }
+        if (!response.ok) {
+            console.error(`Ошибка при попытке записаться на курс ${courseId}: ` + JSON.stringify(await response.json()));
+            throw new Error(response.status.toString());
+        }
+
+        //Здесть может быть `return response;`
+    })
 };
+
+export const tryRequest = async (fun) => {
+    try {
+        return fun()
+    } catch (error) {
+
+    }
+}
