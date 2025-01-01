@@ -1,47 +1,213 @@
-<div id="name"></div>
+<h1 id="name"></h1>
 
-<div style="display: inline-block">Основные данные курса</div>
-<button style="display: inline-block">Редактировать</button>
 
+<h2>Основные данные курса</h2>
+<button id="change-course-details-button" type="button" class="btn btn-primary" style="display: none"
+        data-toggle="modal" data-target="#change-course-details-modal">
+    Редактировать
+</button>
+
+
+<h3>Статус курса</h3>
+<div id="status"></div>
+<button id="change-course-status-button" type="button" class="btn btn-primary" style="display: none"
+        data-toggle="modal" data-target="#change-course-status-modal">
+    Изменить
+</button>
+
+
+<h3>Учебный год</h3>
+<div id="start-year"></div>
+<h3>Семестр</h3>
+<div id="semester"></div>
+
+
+<h3>Всего мест</h3>
+<div id="maximum-students-count"></div>
+<h3>Зачислено</h3>
+<div id="students-enrolled-count"></div>
+
+
+<h3>Заявок на рассмотрении</h3>
+<div id="students-in-queue-count"></div>
+
+
+<h2>Требование к курсу</h2>
+<div id="requirements"></div>
+
+
+<h2>Аннотация</h2>
+<div id="annotations"></div>
+
+
+<br>
+<div id="notifications">
+    <h2 style="display: inline">Уведомления</h2>
+    <p style="display: inline">&nbsp;(</p>
+    <div id="notification-count" style="display: inline"></div>
+    <p style="display: inline">)</p>
+    <br>
+
+    <button id="create-notification-button" type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#create-notification-modal">
+        Создать уведомление
+    </button>
+    <div id="notification-template" style="display: none"></div>
+</div>
+<br>
+
+
+<h2>Преподаватели</h2>
+<button id="add-teacher-button" type="button" class="btn btn-primary" style="display: none" data-toggle="modal"
+        data-target="#add-teacher-modal">
+    Добавить преподавателя
+</button>
 <div>
-    <div style="display: inline-block">
-        <div style="display: inline">Статус курса</div>
-        <br>
-        <div id="status" style="display: inline"></div>
+    <div id="teachers">
+        <div id="teacher-badge-template" style="display: none"></div>
+        <div id="teacher-template" style="display: none">
+            <br>
+            <div class="teacher-name"></div>
+            <div class="teacher-email"></div>
+        </div>
     </div>
-    <button style="display: inline">Изменить</button>
+</div>
+<br>
+
+
+<h2>Студенты</h2>
+<div>
+    <div id="students">
+        <div id="student-status-change-template" style="display: none">
+            <button class="accept-button">Принять</button>
+            <br>
+            <button class="decline-button">Отклонить заявку</button>
+        </div>
+        <div id="student-template" style="display: none">
+            <br>
+            <div class="student-properties">
+                <div class="student-name"></div>
+                <div style="display: inline">Статус -</div>
+                <div style="display: inline" class="student-status"></div>
+                <div class="midterm-result-container" style="display: none">
+                    <div style="display: inline">Промежуточная аттестация -</div>
+                    <div style="display: inline" class="midtermResult"></div>
+                </div>
+                <div class="final-result-container" style="display: none">
+                    <div style="display: inline">Финальная аттестация -</div>
+                    <div style="display: inline" class="finalResult"></div>
+                </div>
+                <div class="student-email"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div>
-    <div style="display: inline-block">
-        <div style="display: inline">Учебный год</div>
-        <br>
-        <div id="start-year" style="display: inline"></div>
-    </div>
-    <div style="display: inline-block">
-        <div style="display: inline">Семестр</div>
-        <br>
-        <div id="semester" style="display: inline"></div>
+<div class="modal fade" id="change-course-details-modal" tabindex="-1" role="dialog"
+     aria-labelledby="change-course-details-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="change-course-details-modal-label">Редактирование курса</h5>
+            </div>
+            <div class="modal-body">
+                <div id="short-form" style="display: none">
+                    <label>Требования</label>
+                    <div class="form-floating">
+                        <textarea id="requirements-text" aria-label="requirements text" class="form-control"></textarea>
+                    </div>
+                    <label>Аннотация</label>
+                    <div class="form-floating">
+                        <textarea id="annotations-text" aria-label="annotations text" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div id="long-form" style="display: none">
+                    Пока тут нихуя нет. Потом будет форма из создания курса
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div>
-    <div style="display: inline-block">
-        <div style="display: inline">Всего мест</div>
-        <br>
-        <div id="maximum-students-count" style="display: inline"></div>
-    </div>
-    <div style="display: inline-block">
-        <div style="display: inline">Зачислено</div>
-        <br>
-        <div id="students-enrolled-count" style="display: inline"></div>
+<div class="modal fade" id="create-notification-modal" tabindex="-1" role="dialog"
+     aria-labelledby="create-notification-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-notification-modal-label">Создать уведомление</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating">
+                    <textarea id="notification-text" aria-label="notification text" class="form-control"></textarea>
+                </div>
+                <div class="form-check form-switch">
+                    <input id="notification-importance" class="form-check-input" type="checkbox" role="switch">
+                    <label class="form-check-label" for="notification-importance">Важное уведомление</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div>
-    <div style="display: inline-block">
-        <div style="display: inline">Заявок на рассмотрении</div>
-        <br>
-        <div id="students-in-queue-count" style="display: inline"></div>
+<div class="modal fade" id="change-course-status-modal" tabindex="-1" role="dialog"
+     aria-labelledby="change-course-status-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="change-course-status-modal-label">Изменить статус курса</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="course-status-radio-button"
+                           id="open-for-assigning">
+                    <label class="form-check-label" for="open-for-assigning">
+                        Открыт для записи
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="started">
+                    <label class="form-check-label" for="started">
+                        В процессе
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="finished">
+                    <label class="form-check-label" for="finished">
+                        Завершён
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-teacher-modal" tabindex="-1" role="dialog" aria-labelledby="add-teacher-modal-label"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-teacher-modal-label">Добавить преподавателя</h5>
+            </div>
+            <div id="add-teacher-modal-error-text" style="display: none; color: red"></div>
+            <select id="users" class="form-select" aria-label="Выберите преподавателя">
+                <option selected>Выберите преподавателя</option>
+            </select>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
     </div>
 </div>
