@@ -1,3 +1,5 @@
+import {cachedRoles, isAuthorized} from "../router.js";
+
 export const login = async (email, password) => {
     try {
         const response = await fetch('https://camp-courses.api.kreosoft.space/login', {
@@ -16,28 +18,26 @@ export const login = async (email, password) => {
     } catch (error) {
         console.error('Ошибка при авторизации:', error);
         throw error;
+        //todo пофиксить login (убрать try catch)
     }
 };
 
 export const register = async (userData) => {
-    try {
-        const response = await fetch('https://camp-courses.api.kreosoft.space/registration', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        });
-        if (!response.ok) {
-            throw new Error('Ошибка регистрации');
-        }
-        const data = await response.json();
-        localStorage.setItem('authToken', data.token);
-        return data;
-    } catch (error) {
-        console.error('Ошибка при регистрации:', error);
-        throw error;
+    const response = await fetch('https://camp-courses.api.kreosoft.space/registration', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+        console.error('Ошибка при регистрации: ' + JSON.stringify(await response.json()));
+        throw new Error(response.status.toString());
     }
+
+    const data = await response.json();
+    localStorage.setItem('authToken', data.token);
 };
 
 export const fetchRoles = async () => {
@@ -83,7 +83,11 @@ const componentsAccesses = {
         isTeacher: true,
         isAdmin: false,
     },
-
+    createGroupOrCourseButton: {
+        isStudent: false,
+        isTeacher: false,
+        isAdmin: true,
+    }
 }
 
 export const checkAuthorization = async () => {
@@ -117,11 +121,15 @@ export const checkAuthorization = async () => {
 }
 
 
-export const checkAccess = async (componentAccess) => {
+export const checkAccess = async (componentAccess, isLazy = true) => {
 
-    const isAuthorize = await checkAuthorization();
+    if (!isLazy) {
+        const response = await checkAuthorization();
+        isAuthorized = response.ok;
+        cachedRoles = response.roles;
+    }
 
-    if (!isAuthorize.ok) {
+    if (!isAuthorized) {
         return false;
     }
 
