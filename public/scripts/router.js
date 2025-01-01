@@ -6,6 +6,8 @@ import {setupLogoutPage} from "./logout.js";
 import {setupProfilePage} from "./profile.js";
 import {setupGroupsPage} from "./groups.js";
 import {setupCourseCardPage} from "./course-card.js";
+import {setupGroupDetailsPage} from "./group-details.js";
+
 
 const routes = {
     "/": { template: "/pages/home.html", setup: null, based: true },
@@ -14,12 +16,13 @@ const routes = {
     "/logout": { template: "/pages/logout.html", setup: setupLogoutPage },
     "/profile": { template: "/pages/profile.html", setup: setupProfilePage },
     "/groups": { template: "/pages/groups.html", setup: setupGroupsPage },
-    "/groups/:id": { template: "/pages/group-details.html", setup: null, dynamic: true },
+    "/groups/:id": { template: "/pages/group-details.html", setup: setupGroupDetailsPage, dynamic: true },
     "/courses/:id": {template: "/pages/course-card/course-card.html", setup: setupCourseCardPage, dynamic: true},
 };
 
 export let cachedProfile = null;
 export let isAuthorized = false;
+export let cachedRoles = null;
 
 function matchRoute(path) {
     if (routes[path] && !routes[path].dynamic) {
@@ -96,6 +99,7 @@ export async function handleRoute(path) {
     if (!authResponse.ok || !token) {
         isAuthorized = false;
         cachedProfile = null;
+        cachedRoles = null;
         await loadNavbar();
 
         const route = matchRoute(path)?.route || routes["/"];
@@ -106,6 +110,7 @@ export async function handleRoute(path) {
         }
     } else {
         isAuthorized = true;
+        cachedRoles = authResponse.roles;
 
         if (!cachedProfile) {
             cachedProfile = await getProfile();
@@ -165,7 +170,7 @@ export async function loadNavbar() {
         document.getElementById("registration").hidden = false;
     }
 
-    const roles = isAuthorized ? await fetchRoles() : { isStudent: false, isTeacher: false };
+    const roles = isAuthorized ? cachedRoles : { isStudent: false, isTeacher: false };
     document.getElementById("MyCourses").hidden = !roles.isStudent;
     document.getElementById("TeacherCourses").hidden = !roles.isTeacher;
 }
@@ -176,6 +181,7 @@ async function init() {
     isAuthorized = authResponse.ok;
     if (isAuthorized) {
         cachedProfile = await getProfile();
+        cachedRoles = authResponse.roles;
     }
 
     setupRouter();

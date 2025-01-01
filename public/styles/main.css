@@ -24,9 +24,9 @@ nav ul li a:hover {
     text-decoration: underline;
 }
 
-.container {
-    padding: 20px;
-}
+/*.container {*/
+/*    padding: 20px;*/
+/*}*/
 
 input[disabled].custom-disabled {
     background-color: #f4f4f4 !important;

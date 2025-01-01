@@ -1,40 +1,49 @@
 const apiBaseUrlC = "https://camp-courses.api.kreosoft.space/groups";
-
-// Объявляем модальные окна и элементы
+import {fetchRoles} from "./api/auth.js";
 let createGroupModal, editGroupModal;
+const roles = await fetchRoles();
+const isAdmin = roles.isAdmin;
 
-// Основная функция отображения страницы
 export async function setupGroupsPage() {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
         alert("Авторизация требуется для доступа к этой странице.");
-        window.location.href = "/login.html";
+        window.location.href = "/login";
         return;
     }
 
-    // Инициализация модальных окон
-    const createGroupModalElement = document.getElementById("createGroupModal");
-    const editGroupModalElement = document.getElementById("editGroupModal");
-    createGroupModal = new bootstrap.Modal(createGroupModalElement);
-    editGroupModal = new bootstrap.Modal(editGroupModalElement);
+    const actionsHeader = document.getElementById("actionsHeader");
 
-    // Настраиваем кнопку "Создать группу"
+    if (isAdmin) {
+        actionsHeader.style.visibility = "visible"; // Показываем текст
+    } else {
+        actionsHeader.style.visibility = "hidden"; // Скрываем текст, но оставляем границы
+    }
+
     const createGroupBtn = document.getElementById("createGroupBtn");
-    createGroupBtn.addEventListener("click", () => createGroupModal.show());
 
-    // Настраиваем форму создания группы
-    const createGroupForm = document.getElementById("createGroupForm");
-    createGroupForm.addEventListener("submit", handleCreateGroup);
+    if (isAdmin) {
+        createGroupBtn.style.display = "block";
 
-    // Настраиваем форму редактирования группы
-    const editGroupForm = document.getElementById("editGroupForm");
-    editGroupForm.addEventListener("submit", handleEditGroup);
+        const createGroupModalElement = document.getElementById("createGroupModal");
+        createGroupModal = new bootstrap.Modal(createGroupModalElement);
 
-    // Загрузка и отображение групп
+        createGroupBtn.addEventListener("click", () => createGroupModal.show());
+
+        const createGroupForm = document.getElementById("createGroupForm");
+        createGroupForm.addEventListener("submit", handleCreateGroup);
+
+        const editGroupModalElement = document.getElementById("editGroupModal");
+        editGroupModal = new bootstrap.Modal(editGroupModalElement);
+
+        const editGroupForm = document.getElementById("editGroupForm");
+        editGroupForm.addEventListener("submit", handleEditGroup);
+    }
+
     await refreshGroups();
 }
 
-// Функция загрузки списка групп
+
 async function refreshGroups() {
     try {
         const response = await fetch(apiBaseUrlC, {
@@ -42,32 +51,51 @@ async function refreshGroups() {
         });
         if (!response.ok) throw new Error("Ошибка при загрузке групп");
         const groups = await response.json();
-        renderGroupsTable(groups);
+        renderGroupsTable(groups, isAdmin);
     } catch (error) {
         console.error("Ошибка при обновлении списка групп:", error);
     }
 }
 
-// Функция рендера таблицы групп
-function renderGroupsTable(groups) {
+
+function renderGroupsTable(groups, isAdmin) {
     const tableBody = document.getElementById("groupsTableBody");
+    const actionsHeader = document.getElementById("actionsHeader");
     tableBody.innerHTML = "";
+
+    if (isAdmin) {
+        actionsHeader.style.display = "table-cell";
+    } else {
+        actionsHeader.style.display = "none";
+    }
 
     groups.forEach((group) => {
         const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${group.name}</td>
-            <td class="text-end">
-                <button class="btn btn-warning btn-sm edit-group-btn" data-id="${group.id}" data-name="${group.name}">Редактировать</button>
-                <button class="btn btn-danger btn-sm delete-group-btn" data-id="${group.id}">Удалить</button>
-            </td>`;
+
+        row.innerHTML = isAdmin
+            ? `
+                <td>
+                    <a href="/groups/${group.id}" class="text-decoration-underline text-primary group-link">${group.name}</a>
+                </td>
+                <td class="text-end">
+                    <button class="btn btn-warning btn-sm edit-group-btn" data-id="${group.id}" data-name="${group.name}">Редактировать</button>
+                    <button class="btn btn-danger btn-sm delete-group-btn" data-id="${group.id}">Удалить</button>
+                </td>
+            `
+            : `
+                <td>
+                    <a href="/groups/${group.id}" class="text-decoration-underline text-primary">${group.name}</a>
+                </td>
+            `;
+
         tableBody.appendChild(row);
     });
 
-    attachEventListeners();
+    if (isAdmin) {
+        attachEventListeners();
+    }
 }
 
-// Настройка событий для кнопок "Редактировать" и "Удалить"
 function attachEventListeners() {
     const editButtons = document.querySelectorAll(".edit-group-btn");
     editButtons.forEach((button) => {
@@ -89,10 +117,10 @@ function attachEventListeners() {
     });
 }
 
-// Обработчик создания группы
 async function handleCreateGroup(event) {
     event.preventDefault();
     const groupName = document.getElementById("newGroupName").value;
+
     try {
         const response = await fetch(apiBaseUrlC, {
             method: "POST",
@@ -111,7 +139,6 @@ async function handleCreateGroup(event) {
     }
 }
 
-// Обработчик редактирования группы
 async function handleEditGroup(event) {
     event.preventDefault();
     const groupId = document.getElementById("editGroupId").value;
@@ -135,7 +162,6 @@ async function handleEditGroup(event) {
     }
 }
 
-// Удаление группы
 async function deleteGroup(groupId) {
     if (confirm("Вы уверены, что хотите удалить эту группу?")) {
         try {
