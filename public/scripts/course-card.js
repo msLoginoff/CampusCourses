@@ -121,7 +121,7 @@ function setupStudents(courseDetails, roles) {
         studentNode.getElementsByClassName("student-email")[0].innerHTML = student['email']
         studentNode.getElementsByClassName("student-status")[0].innerHTML = translate(student['status'])
 
-        if (student['status'] === 'Accepted') {
+        if (student['midtermResult'] && student['finalResult']) {
             middleTermResultContainerNode.style.display = null
             finalResultLabelContainerNode.style.display = null
             middleTermResultNode.innerHTML = translate(student['midtermResult'])
@@ -132,7 +132,6 @@ function setupStudents(courseDetails, roles) {
         setupFinalResultChangeModal(courseId, student['id'], studentNode)
 
         if (student['status'] === 'InQueue') {
-            const studentStatusChangeNode = studentStatusChangeTemplateNode.cloneNode(true)
             studentStatusChangeNode.getElementsByClassName('accept-button')[0].onclick = function () {
                 acceptStudent(courseId, student['id']).then(() => {
                     studentNode.removeChild(studentStatusChangeNode)
