@@ -201,3 +201,35 @@ export const changeCourseDetails = async (courseDetails) => {
 
     return await response.json();
 };
+
+export const setStudentMark = async (courseId, studentId, markType, mark) => {
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        console.log('User is not authorized');
+        //todo сделать по-человечески
+        window.location.href = "/login"
+    }
+
+    const body = JSON.stringify({
+        markType: markType,
+        mark: mark
+    })
+    console.log(body)
+
+    const response = await fetch(`https://camp-courses.api.kreosoft.space/courses/${courseId}/marks/${studentId}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: body
+    });
+
+    if (!response.ok) {
+        console.error(`Ошибка при попытке изменения отметки студента ${studentId} в курсе ${courseId} (body: ${body}): ` + JSON.stringify(await response.json()));
+        throw new Error(response.status.toString());
+    }
+
+    return await response.json();
+};

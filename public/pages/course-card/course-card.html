@@ -90,11 +90,11 @@
                 <div style="display: inline">Статус -</div>
                 <div style="display: inline" class="student-status"></div>
                 <div class="midterm-result-container" style="display: none">
-                    <div style="display: inline">Промежуточная аттестация -</div>
+                    <button type="button" class="btn change-midterm-result-button" style="display: inline; color: #007bff; text-decoration: underline" data-toggle="modal" data-target="#midterm-result-change-modal">Промежуточная аттестация -</button>
                     <div style="display: inline" class="midtermResult"></div>
                 </div>
                 <div class="final-result-container" style="display: none">
-                    <div style="display: inline">Финальная аттестация -</div>
+                    <button type="button" class="btn change-final-result-button" style="display: inline; color: #007bff; text-decoration: underline" data-toggle="modal" data-target="#final-result-change-modal">Финальная аттестация -</button>
                     <div style="display: inline" class="finalResult"></div>
                 </div>
                 <div class="student-email"></div>
@@ -167,21 +167,81 @@
             <div class="modal-body">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="course-status-radio-button"
-                           id="open-for-assigning">
-                    <label class="form-check-label" for="open-for-assigning">
+                           id="open-for-assigning-course-status">
+                    <label class="form-check-label" for="open-for-assigning-course-status">
                         Открыт для записи
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="started">
-                    <label class="form-check-label" for="started">
+                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="started-course-status">
+                    <label class="form-check-label" for="started-course-status">
                         В процессе
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="finished">
-                    <label class="form-check-label" for="finished">
+                    <input class="form-check-input" type="radio" name="course-status-radio-button" id="finished-course-status">
+                    <label class="form-check-label" for="finished-course-status">
                         Завершён
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="midterm-result-change-modal" tabindex="-1" role="dialog"
+     aria-labelledby="midterm-result-change-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="midterm-result-change-modal-label">Изменение отметки для "Промежуточная
+                    аттестация"</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="midterm-result-radio-button" id="passed-midterm-result">
+                    <label class="form-check-label" for="passed-midterm-result">
+                        Пройдено
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="midterm-result-radio-button" id="failed-midterm-result">
+                    <label class="form-check-label" for="failed-midterm-result">
+                        Зафейлено
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="final-result-change-modal" tabindex="-1" role="dialog"
+     aria-labelledby="final-result-change-modal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="final-result-change-modal-label">Изменение отметки для "Промежуточная
+                    аттестация"</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="final-result-radio-button" id="passed-final-result">
+                    <label class="form-check-label" for="passed-final-result">
+                        Пройдено
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="final-result-radio-button" id="failed-final-result">
+                    <label class="form-check-label" for="failed-final-result">
+                        Зафейлено
                     </label>
                 </div>
             </div>

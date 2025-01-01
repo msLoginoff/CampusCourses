@@ -3,7 +3,7 @@ import {
     changeCourseStatus,
     createNotification,
     editStatusStudent,
-    fetchCourseDetails
+    fetchCourseDetails, setStudentMark
 } from "./api/course.js";
 import {fetchRoles} from "./api/auth.js";
 import {fetchUsers} from "./api/user.js";
@@ -14,6 +14,7 @@ export async function setupCourseCardPage(params) {
     const courseDetails = await fetchCourseDetails(courseId)
     const roles = await fetchRoles()
     const profile = await getProfile()
+    const myEmail = profile['email']
     console.log(courseDetails)
 
     setupMainCourseDetails(courseDetails)
@@ -22,9 +23,9 @@ export async function setupCourseCardPage(params) {
     setupStudents(courseDetails, roles)
 
     setupChangeCourseDetailsModal(courseId, roles)
-    setupChangeCourseStatusModal(courseId, roles)
+    setupChangeCourseStatusModal(courseDetails, roles, myEmail)
     setupCreateNotificationModal(courseId)
-    setupAddTeacherModal(courseDetails, roles, profile['email'])
+    setupAddTeacherModal(courseDetails, roles, myEmail)
 }
 
 function setupMainCourseDetails(courseDetails) {
@@ -49,9 +50,9 @@ function setupRequirementsAndAnnotations(requirements, annotations) {
 function setupCourseStatus(status) {
     document.getElementById(`status`).innerHTML = translate(status)
 
-    const openForAssigning = document.getElementById(`open-for-assigning`)
-    const started = document.getElementById(`started`)
-    const finished = document.getElementById(`finished`)
+    const openForAssigning = document.getElementById(`open-for-assigning-course-status`)
+    const started = document.getElementById(`started-course-status`)
+    const finished = document.getElementById(`finished-course-status`)
 
     if (status === 'OpenForAssigning') {
         openForAssigning.checked = true
@@ -124,6 +125,9 @@ function setupStudents(courseDetails, roles) {
             middleTermResultNode.innerHTML = translate(student['midtermResult'])
             finalResultNode.innerHTML = translate(student['finalResult'])
         }
+
+        setupMidtermResultChangeModal(courseId, student['id'], studentNode)
+        setupFinalResultChangeModal(courseId, student['id'], studentNode)
 
         if (student['status'] === 'InQueue') {
             const studentStatusChangeNode = studentStatusChangeTemplateNode.cloneNode(true)
@@ -202,6 +206,8 @@ function setupCreateNotificationModal(courseId) {
         createNotification(courseId, notificationText, isImportant).then(() => {
             // noinspection JSUnresolvedReference
             createNotificationModal.hide()
+            const notificationCountNode = document.getElementById(`notification-count`)
+            notificationCountNode.innerHTML = `${parseInt(notificationCountNode.innerHTML) + 1}`
             addNotificationNode(notificationText, isImportant)
         })
     })
@@ -245,8 +251,11 @@ function setupChangeCourseDetailsModal(courseId, roles) {
     })
 }
 
-function setupChangeCourseStatusModal(courseId, roles) {
-    if (!roles.isAdmin && !roles.isTeacher) {
+function setupChangeCourseStatusModal(courseDetails, roles, myEmail) {
+    const courseId = courseDetails['id']
+    const isCourseTeacher = courseDetails['teachers'].some((teacher) => teacher['email'] === myEmail)
+
+    if (!roles.isAdmin && !isCourseTeacher) {
         return
     }
 
@@ -263,9 +272,9 @@ function setupChangeCourseStatusModal(courseId, roles) {
     // noinspection JSUnresolvedReference
     closeNodalButton.addEventListener("click", () => createChangeCourseStatusModal.hide())
     saveModalButton.addEventListener("click", () => {
-        const openForAssigning = document.getElementById("open-for-assigning").checked
-        const started = document.getElementById("started").checked
-        const finished = document.getElementById("finished").checked
+        const openForAssigning = document.getElementById("open-for-assigning-course-status").checked
+        const started = document.getElementById("started-course-status").checked
+        const finished = document.getElementById("finished-course-status").checked
         let status
 
         if (openForAssigning) {
@@ -285,8 +294,8 @@ function setupChangeCourseStatusModal(courseId, roles) {
 }
 
 function setupAddTeacherModal(courseDetails, roles, myEmail) {
-    const mainTeacher = courseDetails['teachers'].some((teacher) => teacher['isMain'] && teacher['email'] === myEmail)
-    if (!roles.isAdmin && !mainTeacher) {
+    const isMainTeacher = courseDetails['teachers'].some((teacher) => teacher['isMain'] && teacher['email'] === myEmail)
+    if (!roles.isAdmin && !isMainTeacher) {
         return
     }
 
@@ -300,7 +309,6 @@ function setupAddTeacherModal(courseDetails, roles, myEmail) {
     const openModalButton = document.getElementById("add-teacher-button");
     const closeNodalButton = addTeacherModalNode.getElementsByClassName("close-modal")[0];
     const saveModalButton = addTeacherModalNode.getElementsByClassName("save-modal")[0];
-
 
     fetchUsers().then((users) => {
         // const currentTeachers = courseDetails['teachers'].map((teacher) => teacher['id'])
@@ -342,6 +350,79 @@ function setupAddTeacherModal(courseDetails, roles, myEmail) {
     })
 }
 
+function setupMidtermResultChangeModal(courseId, studentId, studentNode) {
+    const changeMidtermResultModalNode = document.getElementById("midterm-result-change-modal")
+    // noinspection JSUnresolvedReference
+    const changeMidtermResultModal = new bootstrap.Modal(changeMidtermResultModalNode);
+
+    const openModalButton = studentNode.getElementsByClassName("change-midterm-result-button")[0];
+    const closeModalButton = changeMidtermResultModalNode.getElementsByClassName("close-modal")[0];
+
+
+    openModalButton.addEventListener("click", () => {
+        changeMidtermResultModal.show()
+
+        const saveModalButton = changeMidtermResultModalNode.getElementsByClassName("save-modal")[0];
+        const saveModalButtonClone = saveModalButton.cloneNode(true);
+        saveModalButton.parentNode.replaceChild(saveModalButtonClone, saveModalButton);
+
+        saveModalButtonClone.addEventListener("click", () => {
+            const passed = document.getElementById("passed-midterm-result").checked
+            const failed = document.getElementById("failed-midterm-result").checked
+
+            if (!passed && !failed){
+                return
+            }
+
+            const mark = passed ? 'Passed' : 'Failed'
+            setStudentMark(courseId, studentId, 'Midterm', mark).then(() => {
+                studentNode.getElementsByClassName("midtermResult")[0].innerHTML = translate(mark)
+                // noinspection JSUnresolvedReference
+                changeMidtermResultModal.hide()
+            })
+        })
+    })
+    // noinspection JSUnresolvedReference
+    closeModalButton.addEventListener("click", () => changeMidtermResultModal.hide())
+
+}
+
+function setupFinalResultChangeModal(courseId, studentId, studentNode) {
+    const changeFinalResultModalNode = document.getElementById("final-result-change-modal")
+    // noinspection JSUnresolvedReference
+    const changeFinalResultModal = new bootstrap.Modal(changeFinalResultModalNode);
+
+    const openModalButton = studentNode.getElementsByClassName("change-final-result-button")[0];
+    const closeModalButton = changeFinalResultModalNode.getElementsByClassName("close-modal")[0];
+
+
+    openModalButton.addEventListener("click", () => {
+        changeFinalResultModal.show()
+
+        const saveModalButton = changeFinalResultModalNode.getElementsByClassName("save-modal")[0];
+        const saveModalButtonClone = saveModalButton.cloneNode(true);
+        saveModalButton.parentNode.replaceChild(saveModalButtonClone, saveModalButton);
+
+        saveModalButtonClone.addEventListener("click", () => {
+            const passed = document.getElementById("passed-final-result").checked
+            const failed = document.getElementById("failed-final-result").checked
+
+            if (!passed && !failed){
+                return
+            }
+
+            const mark = passed ? 'Passed' : 'Failed'
+            setStudentMark(courseId, studentId, 'Final', mark).then(() => {
+                studentNode.getElementsByClassName("finalResult")[0].innerHTML = translate(mark)
+                // noinspection JSUnresolvedReference
+                changeFinalResultModal.hide()
+            })
+        })
+    })
+    // noinspection JSUnresolvedReference
+    closeModalButton.addEventListener("click", () => changeFinalResultModal.hide())
+}
+
 async function acceptStudent(courseId, studentId) {
     return editStatusStudent(courseId, studentId, 'Accepted')
 }
@@ -372,6 +453,10 @@ function translate(enumValue) {
             return 'Осенний'
         case 'Spring':
             return 'Весенный'
+        case 'Passed':
+            return 'Пройдено'
+        case 'Failed':
+            return 'Зафейлено'
         default:
             return enumValue
     }
