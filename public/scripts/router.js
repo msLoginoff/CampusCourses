@@ -131,7 +131,19 @@ export async function handleRoute(path) {
 
 function setupRouter() {
     document.body.addEventListener('click', (event) => {
+        if (
+            (event.target.closest('.note-editor') || event.target.getAttribute('href') === '#')
+        ) {
+            return;
+        }
+
         if (event.target.tagName === 'A' && event.target.getAttribute('href')) {
+            const href = event.target.getAttribute('href');
+            const isExternalLink = href.startsWith('http') && !href.startsWith(window.location.origin);
+
+            if (isExternalLink) {
+                return;
+            }
             event.preventDefault();
             const path = event.target.getAttribute('href');
             window.history.pushState({}, '', path);

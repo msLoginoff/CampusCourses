@@ -1,23 +1,25 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Gotham Pro", sans-serif;
+    font-weight: 500;
     margin: 0;
     padding: 0;
     background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    margin-left: 16px;
+    margin-right: 40px;
 }
 
 nav ul {
     display: flex;
     list-style: none;
     padding: 0;
+    margin-top: 4px;
 }
 
 nav ul li {
     margin-right: 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #007bff;
 }
 
 nav ul li a:hover {
@@ -32,4 +34,121 @@ input[disabled].custom-disabled {
     background-color: #f4f4f4 !important;
     color: #acacac !important;
     opacity: 1 !important;
+}
+
+.card {
+    font-family: "Gotham Pro", sans-serif;
+    border-color: rgba(255, 255, 255, 0);
+    box-shadow: rgba(1, 11, 23, 0.04) 1px 1px 15px ;
+}
+
+.card:hover {
+    cursor: pointer;
+}
+
+.card * {
+    text-decoration: none !important;
+
+}
+
+.card:hover .card-title {
+    text-decoration: underline !important;
+}
+
+.card-title {
+    font-weight: 500;
+}
+
+.card-subtitle {
+    font-weight: lighter;
+}
+
+.btn {
+    font-weight: 500;
+    padding: 10px 16px 8px 16px;
+    border-radius: 0.25rem;
+}
+
+.form-control {
+    font-weight: 500;
+    text-decoration: none;
+    padding-top: 10px;
+}
+
+.form-select {
+    font-weight: 500;
+    padding-top: 10px;
+}
+
+#notification-text {
+    padding-top: 10px !important;
+}
+
+.form-check-input {
+    margin-top: 1px;
+}
+
+.edit-modal {
+    max-width: 55%;
+}
+
+#course-info-tabs .nav-link {
+    color: #393939;
+    background-color: #ffffff;
+    border-bottom: none;
+    font-weight: 500;
+}
+
+#course-info-tabs .nav-link.active {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+    color: #aaaaaa;
+}
+
+#course-info-tabs .nav-link:hover {
+    color: #aaaaaa;
+    //background-color: #fbfbfb;
+}
+
+#course-members-tabs .nav-link {
+    color: #393939;
+    background-color: #ffffff;
+    border-bottom: none;
+    font-weight: 500;
+}
+
+#course-members-tabs .nav-link.active {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ffffff;
+    color: #aaaaaa;
+}
+
+#course-members-tabs .nav-link:hover {
+    color: #aaaaaa;
+//background-color: #fbfbfb;
+}
+
+.count-button {
+    padding: 6px 9px 4px 9px;
+    font-size: 0.7rem;
+    border-radius: 15px;
+}
+
+.tab-content {
+    overflow-y: auto;
+    resize: vertical;
+    max-height: 500px;
+    min-height: 150px;
+    border: none;
+    padding: 12px;
+}
+
+.btn-outline-success {
+    color: #009E0FFF;
+    border-color: #009E0FFF;
+}
+
+.card-students {
+    border: #dfdfdf solid 1px;
+    box-shadow: none !important;
 }

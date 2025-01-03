@@ -1,47 +1,417 @@
-<div id="name"></div>
+<div class="container d-flex justify-content-center align-items-start mt-4">
+  <div class="col-10">
+    <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold mb-0" id="name"></h2>
+      <button class="btn btn-outline-secondary btn-sm" id="change-course-details-button"
+              style="display: none"
+              data-toggle="modal" data-target="#change-course-details-modal">Редактировать</button>
+    </div>
 
-<div style="display: inline-block">Основные данные курса</div>
-<button style="display: inline-block">Редактировать</button>
+        <div class="card border-0">
+          <div class="card-header text-center small py-2 fw-light" style="color: #9a9a9a">
+            Основные данные курса
+          </div>
+          <div class="card-body p-4 pb-2 pt-3">
+            <!-- Статус курса -->
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <div style="margin-top: 0.12rem">
+                <span class="text-muted d-block mb-1">Статус курса</span>
+                <h6 class="mb-0" id="status"></h6>
+              </div>
+              <div>
+                <button id="sign-up-to-course-button" type="button" class="btn btn-outline-success btn-sm mt-1" style="display: none">
+                  Записаться на курс
+                </button>
+                <button class="btn btn-outline-warning btn-sm mt-1" id="change-course-status-button" type="button"
+                        style="display: none"
+                        data-toggle="modal" data-target="#change-course-status-modal">Изменить</button>
+              </div>
 
-<div>
-  <div style="display: inline-block">
-    <div style="display: inline">Статус курса</div>
-    <br>
-    <div id="status" style="display: inline"></div>
+            </div>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-2 pb-2">
+                <span>Учебный год</span>
+                <span class="fw-light" id="start-year"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-3 pb-2">
+                <span>Семестр</span>
+                <span class="fw-light" id="semester"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-3 pb-2">
+                <span>Всего мест</span>
+                <span class="fw-light" id="maximum-students-count"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-3 pb-2">
+                <span>Студентов зачислено</span>
+                <span class="fw-light" id="students-enrolled-count">5</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 pt-3 pb-2">
+                <span>Заявок на рассмотрении</span>
+                <span class="fw-light" id="students-in-queue-count">30</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      <div class="card border-0 mt-4">
+        <div class="card-header text-center small py-2 fw-light" style="color: #9a9a9a;">
+          Информация о курсе
+        </div>
+        <div class="card-body p-4 pb-4 pt-3">
+          <ul class="nav nav-tabs mb-3" id="course-info-tabs" role="tablist" style="border-bottom: 1px solid #dee2e6;">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="requirements-tab" data-bs-toggle="tab" data-bs-target="#requirements" type="button" role="tab" aria-controls="requirements" aria-selected="true">
+                Требования
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="annotation-tab" data-bs-toggle="tab" data-bs-target="#annotations" type="button" role="tab" aria-controls="annotation" aria-selected="false">
+                Аннотация
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
+                Уведомления
+                <span class="badge bg-danger ms-1 count-button" id="notification-count">0</span>
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="course-info-tabs-content">
+            <div class="tab-pane fade" id="requirements" role="tabpanel" aria-labelledby="requirements-tab">
+            </div>
+
+            <div class="tab-pane fade show active" id="annotations" role="tabpanel" aria-labelledby="annotation-tab">
+            </div>
+
+            <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+              <button class="btn btn-outline-primary btn-sm mb-3" id="create-notification-button" data-toggle="modal"
+                      data-target="#create-notification-modal" style="display: none">Создать уведомление</button>
+              <ul class="list-group">
+                <li class="list-group-item" id="notification-template" style="display: none"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 mt-4">
+        <div class="card-header text-center small py-2 fw-light" style="color: #9a9a9a;">
+          Участники курса
+        </div>
+        <div class="card-body p-4 pb-4 pt-3">
+          <ul class="nav nav-tabs mb-3" id="course-members-tabs" role="tablist" style="border-bottom: 1px solid #dee2e6;">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="teachers-tab" data-bs-toggle="tab" data-bs-target="#teachers" type="button" role="tab" aria-controls="requirements" aria-selected="true">
+                Преподаватели
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#students" type="button" role="tab" aria-controls="annotation" aria-selected="false">
+                Студенты
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="course-members-tabs-content">
+            <div class="tab-pane fade show active" id="teachers" role="tabpanel" aria-labelledby="teachers-tab">
+              <div id="teacher-badge-template" style="display: none"></div>
+              <div id="teacher-template" style="display: none">
+                <br>
+                <div class="teacher-name"></div>
+                <div class="teacher-email"></div>
+              </div>
+              <button id="add-teacher-button" type="button" class="btn btn-outline-primary btn-sm mt-1" style="display: none" data-toggle="modal"
+                      data-target="#add-teacher-modal">
+                Добавить преподавателя
+              </button>
+            </div>
+
+            <div id="student-status-change-template" style="display: none">
+              <button class="accept-button btn btn-outline-success btn-sm mt-1">Принять</button>
+              <br>
+              <button class="decline-button btn btn-outline-danger btn-sm mt-1 mb-3">Отклонить заявку</button>
+            </div>
+
+            <div class="tab-pane fade" id="students" role="tabpanel" aria-labelledby="students-tab">
+              <div id="student-template" class="mb-0" style="display: none">
+                <div class="card mb-0">
+                  <div class="card-body pb-0 card-students">
+                    <div class="row">
+                      <!-- Первая колонка: Данные студента -->
+                      <div class="col-md-6 student-properties mb-3">
+                        <div class="student-name"></div>
+                        <div style="display: inline">Статус -</div>
+                        <div style="display: inline" class="student-status"></div>
+                        <div class="student-email"></div>
+                      </div>
+
+                      <!-- Вторая колонка: Кнопки аттестаций -->
+                      <div class="col-md-6 for-buttons-results">
+                        <div class="d-flex justify-content-between align-items-center py-0">
+                          <!-- Промежуточная аттестация -->
+                          <div class="midterm-result-container" style="display: none;">
+                            <button type="button" class="btn change-midterm-result-button p-0" style="color: #007bff; text-decoration: underline;" data-toggle="modal" data-target="#midterm-result-change-modal">
+                              Промежуточная аттестация -
+                            </button>
+                          </div>
+                          <div class="midterm-result-container" style="display: none;">
+                            <span class="midtermResult text-muted"></span>
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center py-0">
+                          <!-- Финальная аттестация -->
+                          <div class="final-result-container" style="display: none;">
+                            <button type="button" class="btn change-final-result-button p-0" style="color: #007bff; text-decoration: underline;" data-toggle="modal" data-target="#final-result-change-modal">
+                              Финальная аттестация -
+                            </button>
+                          </div>
+                          <div class="final-result-container" style="display: none;">
+                            <span class="finalResult text-muted"></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Третья колонка: Результаты аттестаций -->
+                      <div class="col-md-3 text-end">
+                        <div class="midterm-result-container mb-2" style="display: none;">
+                          <span class="midtermResult text-muted"></span>
+                        </div>
+                        <div class="final-result-container" style="display: none;">
+                          <span class="finalResult text-muted"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+              </div>
+            </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
   </div>
-  <button style="display: inline">Изменить</button>
+
+<div class="modal fade" id="change-course-details-modal" tabindex="-1" role="dialog"
+     aria-labelledby="change-course-details-modal-label" aria-hidden="true">
+  <div class="modal-dialog edit-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="change-course-details-modal-label">Редактирование курса</h5>
+      </div>
+      <div class="modal-body">
+        <form id="edit-course-form">
+          <div id="long-form" style="display: none">
+          <div class="mb-3">
+            <label for="course-name" class="form-label"></label>
+            <input class="form-control" name="name" aria-label="course-name" id="course-name" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="course-year" class="form-label">Год начала курса</label>
+            <input class="form-control" name="year" aria-label="requirements text" id="course-year" type="number" min="2000" max="2029" value="2025">
+          </div>
+
+          <div class="mb-3">
+            <label for="course-students-count" class="form-label">Общее количество мест</label>
+            <input class="form-control" name="studentsCount" aria-label="requirements text" id="course-students-count" type="number" min="1" max="200" value="200">
+          </div>
+
+          <div class="mb-3">
+            <label for="course-students-count" class="form-label">Семестр</label>
+            <div style="display: flex;">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="semester"
+                       id="course-semester-spring" checked>
+                <label class="form-check-label" for="course-semester-spring">
+                  Весенний
+                </label>
+              </div>
+              <div class="form-check ms-3">
+                <input class="form-check-input" type="radio" name="semester"
+                       id="course-semester">
+                <label class="form-check-label" for="course-semester">
+                  Осенний
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="mb-3" hidden>
+            <label for="all-users" class="form-label">Основной преподаватель курса</label>
+            <select id="all-users" class="form-select" name="teacher" aria-label="Выберите преподавателя">
+              <option selected>Выберите преподавателя</option>
+            </select>
+          </div>
+          </div>
+
+          <div id="short-form" style="display: none">
+            <div class="mb-3">
+              <label for="requirements-text" class="form-label">Требования</label>
+              <textarea required class="form-control" aria-label="requirements text" id="requirements-text" placeholder="Введите требования"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="annotations-text" class="form-label">Аннотация</label>
+              <textarea required class="form-control" aria-label="annotations-text" id="annotations-text" placeholder="Введите аннотацию">
+                </textarea>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div>
-  <div style="display: inline-block">
-    <div style="display: inline">Учебный год</div>
-    <br>
-    <div id="start-year" style="display: inline"></div>
-  </div>
-  <div style="display: inline-block">
-    <div style="display: inline">Семестр</div>
-    <br>
-    <div id="semester" style="display: inline"></div>
-  </div>
-</div>
-
-<div>
-  <div style="display: inline-block">
-    <div style="display: inline">Всего мест</div>
-    <br>
-    <div id="maximum-students-count" style="display: inline"></div>
-  </div>
-  <div style="display: inline-block">
-    <div style="display: inline">Зачислено</div>
-    <br>
-    <div id="students-enrolled-count" style="display: inline"></div>
+<div class="modal fade" id="create-notification-modal" tabindex="-1" role="dialog"
+     aria-labelledby="create-notification-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create-notification-modal-label">Создать уведомление</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-floating">
+          <textarea id="notification-text" aria-label="notification text" class="form-control"></textarea>
+        </div>
+        <div class="form-check form-switch">
+          <input id="notification-importance" class="form-check-input" type="checkbox" role="switch">
+          <label class="form-check-label" for="notification-importance">Важное уведомление</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<div>
-  <div style="display: inline-block">
-    <div style="display: inline">Заявок на рассмотрении</div>
-    <br>
-    <div id="students-in-queue-count" style="display: inline"></div>
+<div class="modal fade" id="change-course-status-modal" tabindex="-1" role="dialog"
+     aria-labelledby="change-course-status-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="change-course-status-modal-label">Изменить статус курса</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="course-status-radio-button"
+                 id="open-for-assigning-course-status">
+          <label class="form-check-label" for="open-for-assigning-course-status">
+            Открыт для записи
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="course-status-radio-button" id="started-course-status">
+          <label class="form-check-label" for="started-course-status">
+            В процессе
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="course-status-radio-button" id="finished-course-status">
+          <label class="form-check-label" for="finished-course-status">
+            Завершён
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="midterm-result-change-modal" tabindex="-1" role="dialog"
+     aria-labelledby="midterm-result-change-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="midterm-result-change-modal-label">Изменение отметки для "Промежуточная
+          аттестация"</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="midterm-result-radio-button" id="passed-midterm-result">
+          <label class="form-check-label" for="passed-midterm-result">
+            Пройдено
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="midterm-result-radio-button" id="failed-midterm-result">
+          <label class="form-check-label" for="failed-midterm-result">
+            Зафейлено
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="final-result-change-modal" tabindex="-1" role="dialog"
+     aria-labelledby="final-result-change-modal-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="final-result-change-modal-label">Изменение отметки для "Промежуточная
+          аттестация"</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="final-result-radio-button" id="passed-final-result">
+          <label class="form-check-label" for="passed-final-result">
+            Пройдено
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="final-result-radio-button" id="failed-final-result">
+          <label class="form-check-label" for="failed-final-result">
+            Зафейлено
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add-teacher-modal" tabindex="-1" role="dialog" aria-labelledby="add-teacher-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-teacher-modal-label">Добавить преподавателя</h5>
+      </div>
+      <div id="add-teacher-modal-error-text" style="display: none; color: red"></div>
+      <select id="users" class="form-select" aria-label="Выберите преподавателя">
+        <option selected>Выберите преподавателя</option>
+      </select>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary save-modal">Сохранить</button>
+      </div>
+    </div>
   </div>
 </div>

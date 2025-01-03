@@ -2,7 +2,7 @@
 	<div class="col-10">
 		<div class="container-fluid">
 			<h2 class="mb-3" style="color: #979797">Группа / <span id="groupTitle" style="color: #000311"></span></h2>
-			<button id="createCourseBtn" type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#createGroupModal">
+			<button id="createCourseBtn" type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#createGroupModal" hidden>
 				Создать
 			</button>
 			<div id="containerForCourses">
@@ -14,7 +14,7 @@
 
 
 <template id="card-template">
-	<div class="card mb-1">
+	<div class="card mb-3">
 		<div class="card-body pb-0">
 			<div class="d-flex flex-column flex-md-row align-items-start align-items-md-center">
 				<h4 class="card-title flex-grow-1 text-truncate" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">
@@ -26,10 +26,10 @@
 			</div>
 		</div>
 		<div class="card-body pt-0">
-			<h6 class="card-subtitle mb-2 text-muted">Учебный год <span class="course-year">{{year}}</span></h6>
-			<h6 class="card-subtitle mb-2 text-muted">Семестр — <span class="course-semester">{{semester}}</span></h6>
-			<h6 class="card-subtitle mb-2 text-muted">Мест всего — <span class="course-total">{{total}}</span></h6>
-			<h6 class="card-subtitle mb-2 text-muted">Мест свободно — <span class="course-available">{{available}}</span></h6>
+			<h6 class="card-subtitle mb-2 text-muted" >Учебный год: <span class="course-year">{{year}}</span></h6>
+			<h6 class="card-subtitle mb-2 text-muted">Семестр: <span class="course-semester">{{semester}}</span></h6>
+			<h6 class="card-subtitle mb-2 text-muted">Мест всего: <span class="course-total">{{total}}</span></h6>
+			<h6 class="card-subtitle mb-2 text-muted">Мест свободно: <span class="course-available">{{available}}</span></h6>
 		</div>
 	</div>
 </template>
