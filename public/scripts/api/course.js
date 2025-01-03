@@ -234,6 +234,35 @@ export const setStudentMark = async (courseId, studentId, markType, mark) => {
     return await response.json();
 };
 
+export const createCourse = async (groupId, courseDetails) => {
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        console.log('User is not authorized');
+        //todo сделать по-человечески
+        window.location.href = "/login"
+    }
+
+    const body = JSON.stringify(courseDetails)
+    console.log(body)
+
+    const response = await fetch(`https://camp-courses.api.kreosoft.space/groups/${groupId}`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: body
+    });
+
+    if (!response.ok) {
+        console.error(`Ошибка при попытке создать курс для группы ${groupId} (body: ${body}): ` + JSON.stringify(await response.json()));
+        throw new Error(response.status.toString());
+    }
+
+    return await response.json();
+}
+
 export const signUpToCourse = async (courseId) => {
     const token = localStorage.getItem('authToken');
 

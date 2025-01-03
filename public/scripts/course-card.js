@@ -251,7 +251,7 @@ function setupCreateNotificationModal(courseDetails, roles, myEmail) {
     })
 }
 
-export async function setupChangeCourseDetailsModal(courseDetails, roles, myEmail) {
+async function setupChangeCourseDetailsModal(courseDetails, roles, myEmail) {
     const courseId = courseDetails['id'];
     const isCourseTeacher = courseDetails['teachers'].some((teacher) => teacher['email'] === myEmail);
 

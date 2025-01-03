@@ -2,7 +2,8 @@
 	<div class="col-10">
 		<div class="container-fluid">
 			<h2 class="mb-3" style="color: #979797">Группа / <span id="groupTitle" style="color: #000311"></span></h2>
-			<button id="createCourseBtn" type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#createGroupModal" hidden>
+			<button id="create-course-button" type="button" class="btn btn-primary mb-4"
+					data-bs-toggle="modal" data-bs-target="#create-course-modal" hidden>
 				Создать
 			</button>
 			<div id="containerForCourses">
@@ -33,3 +34,79 @@
 		</div>
 	</div>
 </template>
+
+<div class="modal fade" id="create-course-modal" tabindex="-1" role="dialog"
+	 aria-labelledby="create-course-modal-label" aria-hidden="true">
+	<div class="modal-dialog edit-modal" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="create-course-modal-label">Редактирование курса</h5>
+			</div>
+			<div class="modal-body">
+				<form id="edit-course-form">
+					<div id="long-form" style="display: none">
+						<div class="mb-3">
+							<label for="course-name" class="form-label">Название</label>
+							<input class="form-control" name="name" aria-label="course-name" id="course-name" required>
+						</div>
+
+						<div class="mb-3">
+							<label for="course-year" class="form-label">Год начала курса</label>
+							<input class="form-control" name="year" aria-label="requirements text" id="course-year" type="number" min="2000" max="2029" value="2025">
+						</div>
+
+						<div class="mb-3">
+							<label for="course-students-count" class="form-label">Общее количество мест</label>
+							<input class="form-control" name="studentsCount" aria-label="requirements text" id="course-students-count" type="number" min="1" max="200" value="200">
+						</div>
+
+						<div class="mb-3">
+							<label for="course-students-count" class="form-label">Семестр</label>
+							<div style="display: flex;">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="semester"
+										   id="course-semester-spring" checked>
+									<label class="form-check-label" for="course-semester-spring">
+										Весенний
+									</label>
+								</div>
+								<div class="form-check ms-3">
+									<input class="form-check-input" type="radio" name="semester"
+										   id="course-semester">
+									<label class="form-check-label" for="course-semester">
+										Осенний
+									</label>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="mb-3">
+							<label for="all-users" class="form-label">Основной преподаватель курса</label>
+							<select id="all-users" class="form-select" name="teacher" aria-label="Выберите преподавателя">
+								<option selected>Выберите преподавателя</option>
+							</select>
+						</div>
+					</div>
+
+					<div id="short-form" style="display: none">
+						<div class="mb-3">
+							<label for="requirements-text" class="form-label">Требования</label>
+							<textarea required class="form-control" aria-label="requirements text" id="requirements-text" placeholder="Введите требования"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="annotations-text" class="form-label">Аннотация</label>
+							<textarea required class="form-control" aria-label="annotations-text" id="annotations-text" placeholder="Введите аннотацию">
+                </textarea>
+						</div>
+					</div>
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Отмена</button>
+				<button type="button" class="btn btn-primary save-modal">Сохранить</button>
+			</div>
+		</div>
+	</div>
+</div>
